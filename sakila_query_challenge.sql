@@ -73,6 +73,7 @@ SELECT staff.staff_id, staff.first_name, staff.last_name, SUM(payment.amount)
 FROM staff
 INNER JOIN payment ON
 staff.staff_id = payment.staff_id
+WHERE payment.payment_date BETWEEN '2005-08-01' AND '2005-08-31'
 GROUP BY staff_id;
 
 -- 6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join. --
@@ -211,3 +212,5 @@ SELECT * from top_5_genres;
 
 -- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it. --
 DROP VIEW top_5_genres;
+
+SELECT * from payment limit 5;
