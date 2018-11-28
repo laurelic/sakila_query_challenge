@@ -12,14 +12,17 @@ USE sakila;
 -- 1a. Display the first and last names of all actors from the table actor --
 SELECT first_name, last_name FROM actor;
 
--- 1b. Display the first and last name of each actor in a single column in upper case letters. Name the column Actor Name --
+/* 1b. Display the first and last name of each actor in a single column in upper case letters.
+Name the column Actor Name*/
 SET SQL_SAFE_UPDATES = 0;
 ALTER TABLE actor
 	ADD COLUMN `Actor Name` VARCHAR(50);
 UPDATE actor
 	SET `Actor Name` = UPPER(CONCAT(first_name, ' ', last_name));
 
--- 2a. You need to find the ID number, first name, and last name of an actor, of whom you know only the first name, "Joe." What is one query would you use to obtain this information? --
+/*2a. You need to find the ID number, first name, and last name of an actor
+of whom you know only the first name, "Joe." 
+What is one query would you use to obtain this information?*/
 SELECT actor_id, first_name, last_name
 FROM actor
 WHERE first_name = "Joe";
@@ -29,22 +32,29 @@ SELECT `Actor Name`
 FROM actor
 WHERE last_name LIKE "%GEN%";
 
--- 2c. Find all actors whose last names contain the letters LI. This time, order the rows by last name and first name, in that order: --
+/* 2c. Find all actors whose last names contain the letters LI. 
+This time, order the rows by last name and first name, in that order:*/
 SELECT last_name, first_name
 FROM actor
 WHERE last_name like "%LI%"
 ORDER BY last_name, first_name;
 
--- 2d. Using IN, display the country_id and country columns of the following countries: Afghanistan, Bangladesh, and China --
+/* 2d. Using IN, display the country_id and country columns of the following countries: 
+Afghanistan, Bangladesh, and China */
 SELECT country_id, country
 FROM country
 WHERE country IN ('Afghanistan', 'Bangladesh', 'China');
 
--- 3a. You want to keep a description of each actor. You don't think you will be performing queries on a description, so create a column in the table actor named description and use the data type BLOB (Make sure to research the type BLOB, as the difference between it and VARCHAR are significant). --
+/* 3a. You want to keep a description of each actor. 
+You don't think you will be performing queries on a description, 
+so create a column in the table actor named description and use the data type BLOB 
+(Make sure to research the type BLOB, 
+as the difference between it and VARCHAR are significant). */
 ALTER TABLE actor
 	ADD COLUMN description BLOB;
 
--- 3b. Very quickly you realize that entering descriptions for each actor is too much effort. Delete the description column. -- 
+/*3b. Very quickly you realize that entering descriptions for each actor is too much effort.
+Delete the description column.*/
 ALTER TABle actor
 	DROP COLUMN description;
 
@@ -53,30 +63,38 @@ SELECT last_name, COUNT(actor_id)
 FROM actor
 GROUP BY last_name;
 
--- 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors --
+/* 4b. List last names of actors and the number of actors who have that last name, 
+but only for names that are shared by at least two actors */
 SELECT last_name, COUNT(actor_id)
 FROM actor
 GROUP BY last_name
 HAVING COUNT(actor_id) >= 2;
 
--- 4c. The actor HARPO WILLIAMS was accidentally entered in the actor table as GROUCHO WILLIAMS. Write a query to fix the record. --
+/* 4c. The actor HARPO WILLIAMS was accidentally entered in the actor table as GROUCHO WILLIAMS. 
+Write a query to fix the record.*/
 UPDATE actor
 SET first_name='HARPO', `Actor Name`='HARPO WILLIAMS' WHERE `Actor Name`='GROUCHO WILLIAMS';
 
--- 4d. Perhaps we were too hasty in changing GROUCHO to HARPO. It turns out that GROUCHO was the correct name after all! In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO. --
+/* 4d. Perhaps we were too hasty in changing GROUCHO to HARPO.
+It turns out that GROUCHO was the correct name after all!
+In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO.*/
 UPDATE actor
 SET first_name='GROUCHO', `Actor Name`='GROUCHO WILLIAMS' WHERE `Actor Name`='HARPO WILLIAMS';
 
--- 5a. You cannot locate the schema of the address table. Which query would you use to re-create it? --
+/* 5a. You cannot locate the schema of the address table. 
+Which query would you use to re-create it? */
 SHOW CREATE TABLE address;
 
--- 6a. Use JOIN to display the first and last names, as well as the address, of each staff member. Use the tables staff and address: --
+/*6a. Use JOIN to display the first and last names, 
+as well as the address,
+of each staff member: */
 SELECT staff.first_name, staff.last_name, address.address
 FROM staff
 INNER JOIN address ON
 staff.address_id = address.address_id;
 
--- 6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. Use tables staff and payment --
+/* 6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. 
+Use tables staff and payment */
 SELECT staff.staff_id, staff.first_name, staff.last_name, SUM(payment.amount)
 FROM staff
 INNER JOIN payment ON
@@ -84,7 +102,8 @@ staff.staff_id = payment.staff_id
 WHERE payment.payment_date BETWEEN '2005-08-01' AND '2005-08-31'
 GROUP BY staff_id;
 
--- 6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join. --
+/* 6c. List each film and the number of actors who are listed for that film.
+Use tables film_actor and film. Use inner join. */
 SELECT film.title, COUNT(film_actor.actor_id)
 FROM film
 INNER JOIN film_actor ON
@@ -98,7 +117,9 @@ INNER JOIN inventory ON
 film.film_id = inventory.film_id
 WHERE film.title = 'Hunchback Impossible';
 
--- 6e. Using the tables payment and customer and the JOIN command, list the total paid by each customer. List the customers alphabetically by last name: -- 
+/* 6e. Using the tables payment and customer and the JOIN command,
+list the total paid by each customer. 
+List the customers alphabetically by last name: */
 SELECT customer.customer_id, customer.last_name, customer.first_name, SUM(payment.amount)
 FROM customer
 INNER JOIN payment ON
@@ -106,9 +127,9 @@ customer.customer_id = payment.customer_id
 GROUP BY customer_id
 ORDER BY customer.last_name;
 
--- 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence.
--- As an unintended consequence, films starting with the letters K and Q have also soared in popularity.
--- Use subqueries to display the titles of movies starting with the letters K and Q whose language is English. --
+/* 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence.
+As an unintended consequence, films starting with the letters K and Q have also soared in popularity.
+Use subqueries to display the titles of movies starting with the letters K and Q whose language is English.*/
 SELECT title
 FROM film
 WHERE title LIKE 'K%' OR title LIKE 'Q%' AND language_id IN
@@ -133,7 +154,9 @@ WHERE actor_id in
 	)
 );
 
--- 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information. --
+/* 7c. You want to run an email marketing campaign in Canada, 
+for which you will need the names and email addresses of all Canadian customers.
+Use joins to retrieve this information.*/
 SELECT customer.first_name, customer.last_name, customer.email, country.country
 FROM customer
 INNER JOIN address
@@ -144,7 +167,9 @@ INNER JOIN country
 	ON city.country_id = country.country_id
 WHERE country = 'Canada';
 
--- 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as family films. --
+/*7d. Sales have been lagging among young families, 
+and you wish to target all family movies for a promotion. 
+Identify all movies categorized as family films.*/
 
 SELECT film.title, category.name
 FROM film
@@ -199,7 +224,9 @@ GROUP BY category.name
 ORDER BY SUM(payment.amount) DESC
 LIMIT 5;
 
--- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. --
+/*8a. In your new role as an executive, 
+you would like to have an easy way of viewing the Top five genres by gross revenue.
+Use the solution from the problem above to create a view.*/
 CREATE VIEW top_5_genres AS
 SELECT category.name, SUM(payment.amount)
 FROM category
@@ -218,7 +245,8 @@ LIMIT 5;
 -- 8b. How would you display the view that you created in 8a? --
 SELECT * from top_5_genres;
 
--- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it. --
+/* 8c. You find that you no longer need the view top_five_genres.
+Write a query to delete it.*/
 DROP VIEW top_5_genres;
 
 SELECT * from payment limit 5;
